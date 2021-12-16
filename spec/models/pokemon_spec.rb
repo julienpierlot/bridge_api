@@ -42,7 +42,7 @@ RSpec.describe Pokemon, type: :model do
           FactoryBot.attributes_for(
             :pokemon,
             types: [
-              { name: Faker::Types.rb_string }
+              { type: { name: Faker::Types.rb_string } }
             ]
           )
         end
@@ -76,7 +76,7 @@ RSpec.describe Pokemon, type: :model do
             FactoryBot.attributes_for(
               :pokemon,
               types: [
-                { name: Faker::Types.rb_string }
+                { type: { name: Faker::Types.rb_string } }
               ]
             )
           end
@@ -88,7 +88,7 @@ RSpec.describe Pokemon, type: :model do
               described_class.find_or_create_from_api!(payload.to_json)
               pokemon.reload
               expect(pokemon.types.count).to eq(1)
-              expect(pokemon.types.last.name).to eq(payload[:types][0][:name])
+              expect(pokemon.types.last.name).to eq(payload[:types][0][:type][:name])
             end
           end
         end

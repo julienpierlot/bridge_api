@@ -17,4 +17,25 @@ RSpec.describe Type, type: :model do
     it { should have_many(:pokemons).through(:pokemon_types) }
   end
 
+  describe 'Class Methods' do
+    describe '.find_or_initialize_from_names' do
+      let(:name) { FactoryBot.attributes_for(:type)[:name] }
+
+      context 'when name matches existing type' do
+        let!(:type) { FactoryBot.create(:type, name: name) }
+
+        it 'finds type' do
+          expect(described_class.find_or_initialize_from_names([name])).to include(type)
+        end
+      end
+      context 'when name does not match existing type' do
+        it 'initializes type' do
+          expect(
+            described_class.find_or_initialize_from_names([name])[0].new_record?
+          ).to eq(true)
+        end
+      end
+    end
+  end
+
 end
