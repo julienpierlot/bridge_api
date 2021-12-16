@@ -18,6 +18,11 @@ RSpec.describe Pokemon, type: :model do
     it { should validate_numericality_of(:weight).only_integer.is_greater_than_or_equal_to(1) }
   end
 
+  describe 'Associations' do
+    it { should have_many(:pokemon_types) }
+    it { should have_many(:types).through(:pokemon_types) }
+  end
+
   describe 'Class Methods' do
     describe '.find_or_create_from_api!' do
       let(:payload) do

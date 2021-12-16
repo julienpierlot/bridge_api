@@ -3,6 +3,11 @@ class Pokemon < ApplicationRecord
   validates :base_experience, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
   validates :height, :weight, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
+  has_many :pokemon_types, inverse_of: :pokemon
+  has_many :types, through: :pokemon_types
+
+  accepts_nested_attributes_for :types
+
   class << self
 
     def fetch_pokemons!
