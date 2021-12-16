@@ -1,4 +1,4 @@
-class PokemonFetcher
+class PokemonsFetcher
 
   def call(options = {})
     response = fetch_data(:pokemon, options)

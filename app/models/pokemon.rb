@@ -6,7 +6,7 @@ class Pokemon < ApplicationRecord
   class << self
 
     def fetch_pokemons!
-      PokemonFetcher.new.call
+      PokemonsFetcher.new.call
     end
 
     def find_or_create_from_api!(data)

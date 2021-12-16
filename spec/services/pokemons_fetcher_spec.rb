@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe PokemonFetcher do
+RSpec.describe PokemonsFetcher do
   describe '#call' do
     let(:service) { described_class.new }
     let(:body) do
