@@ -37,6 +37,23 @@ RSpec.describe Pokemon, type: :model do
         end
       end
 
+      context 'when attributes have types' do
+        let(:payload) do
+          FactoryBot.attributes_for(
+            :pokemon,
+            types: [
+              { name: Faker::Types.rb_string }
+            ]
+          )
+        end
+
+        it 'creates new types as well' do
+          expect do
+            described_class.find_or_create_from_api!(payload.to_json)
+          end.to change { Type.count }.by(1)
+        end
+      end
+
       context 'when pokemon exists with same name' do
         let!(:pokemon) { FactoryBot.create(:pokemon, name: payload[:name]) }
 
@@ -52,6 +69,28 @@ RSpec.describe Pokemon, type: :model do
           expect(pokemon.base_experience).to eq(payload[:base_experience])
           expect(pokemon.height).to eq(payload[:height])
           expect(pokemon.weight).to eq(payload[:weight])
+        end
+
+        context 'when payload has types' do
+          let(:payload) do
+            FactoryBot.attributes_for(
+              :pokemon,
+              types: [
+                { name: Faker::Types.rb_string }
+              ]
+            )
+          end
+
+          context 'when pokemon already has a type' do
+            let!(:pokemon) { FactoryBot.create(:pokemon, :with_type, name: payload[:name]) }
+
+            it 'deletes old type and creates a new one' do
+              described_class.find_or_create_from_api!(payload.to_json)
+              pokemon.reload
+              expect(pokemon.types.count).to eq(1)
+              expect(pokemon.types.last.name).to eq(payload[:types][0][:name])
+            end
+          end
         end
       end
     end

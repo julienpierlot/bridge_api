@@ -19,10 +19,12 @@ class Pokemon < ApplicationRecord
       pokemon = Pokemon.find_or_initialize_by(
         name: parsed_data[:name],
       )
+      pokemon.types.each(&:mark_for_destruction)
       pokemon.assign_attributes(
         base_experience: parsed_data[:base_experience].to_i,
         height: parsed_data[:height].to_i,
         weight: parsed_data[:weight].to_i,
+        types_attributes: Array.wrap(parsed_data[:types]),
       )
       pokemon.save
     end
