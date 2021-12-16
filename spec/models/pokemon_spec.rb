@@ -50,6 +50,14 @@ RSpec.describe Pokemon, type: :model do
         end
       end
     end
+
+    describe '.fetch_pokemons!' do
+      it 'calls Pokemon Fetcher service' do
+        expect_any_instance_of(PokemonFetcher).to receive(:call)
+        
+        described_class.fetch_pokemons!
+      end
+    end
   end
 
 end
