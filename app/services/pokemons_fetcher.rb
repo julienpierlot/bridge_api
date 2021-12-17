@@ -1,5 +1,6 @@
-class PokemonsFetcher
+# frozen_string_literal: true
 
+class PokemonsFetcher
   def call(options = {})
     response = fetch_data(:pokemon, options)
     fetch_pokemon_from_results(response.results)
@@ -26,11 +27,10 @@ class PokemonsFetcher
   end
 
   def options_from_next_url(url)
-    options = url.split('?').last
-      .scan(/(?<key>[a-z]+)\=(?<value>\d+)/)
-      .reduce({}) do |hash, option|
-        hash.tap { hash[option[0]] = option[1] }
-      end
-    options
+    url.split('?').last
+       .scan(/(?<key>[a-z]+)=(?<value>\d+)/)
+       .reduce({}) do |hash, option|
+      hash.tap { hash[option[0]] = option[1] }
+    end
   end
 end

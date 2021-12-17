@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PokemonType < ApplicationRecord
   validates :type, :pokemon, presence: true
 

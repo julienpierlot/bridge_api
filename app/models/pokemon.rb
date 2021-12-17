@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Pokemon < ApplicationRecord
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :base_experience, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
@@ -9,7 +11,6 @@ class Pokemon < ApplicationRecord
   accepts_nested_attributes_for :types
 
   class << self
-
     def fetch_pokemons!
       PokemonsFetcher.new.call
     end
