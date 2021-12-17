@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Pokemon < ApplicationRecord
+  PAGING = 20
+
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :base_experience, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
   validates :height, :weight, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
@@ -30,5 +32,17 @@ class Pokemon < ApplicationRecord
       )
       pokemon.save
     end
+  end
+
+  def as_json(options = nil)
+    super(options).tap do |json_hash|
+      if options[:with_types]
+        json_hash['types'] = types.map do |type|
+          { name: type.name }
+        end
+      end
+    end
+  rescue StandardError
+    super(options)
   end
 end
