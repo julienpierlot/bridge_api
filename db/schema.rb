@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 2021_12_16_204852) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "pokemon_types", force: :cascade do |t|
     t.integer "type_id", null: false
     t.integer "pokemon_id", null: false
