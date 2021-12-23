@@ -4,8 +4,8 @@ class PokemonsFetcher
   def call(options = {})
     response = fetch_data(:pokemon, options)
     fetch_pokemon_from_results(response.results)
-    while (url = response.next_url)
-      call(options_from_next_url(url))
+    unless response.next_url.nil?
+      call(options_from_next_url(response.next_url))
     end
   end
 
@@ -21,9 +21,7 @@ class PokemonsFetcher
   def fetch_pokemon_from_results(pokemons)
     pokemons.each do |poke|
       poke_info = fetch_data(:pokemon, poke.name)
-      Rails.logger.info "creating or updating #{poke}"
-      pokemon = Pokemon.find_or_create_from_api!(poke_info.to_json)
-      Rails.logger.info("#{pokemon} - DONE")
+      Pokemon.find_or_create_from_api!(poke_info.to_json)
     end
     pokemons
   end
