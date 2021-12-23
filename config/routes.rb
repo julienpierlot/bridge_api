@@ -6,4 +6,5 @@ Rails.application.routes.draw do
       resources :pokemons, param: :name, only: %i[index show]
     end
   end
+  root to: redirect('/api-docs')
 end

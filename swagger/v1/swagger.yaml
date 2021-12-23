@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.1
 info:
-  title: API V1
+  title: Bridge API
   version: v1
 paths:
   "/api/v1/pokemons":
@@ -65,7 +65,4 @@ paths:
             application/json:
               example: {}
 servers:
-- url: https://{defaultHost}
-  variables:
-    defaultHost:
-      default: localhost
+- url: https://localhost
