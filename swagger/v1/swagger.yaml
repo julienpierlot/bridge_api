@@ -1,0 +1,71 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/pokemons":
+    get:
+      summary: paginated pokemons
+      tags:
+      - GET pokemons
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: returns paginated pokemons
+          content:
+            application/json:
+              example:
+                count: 1118
+                offset: 0
+                previous_url:
+                next_url: localhost/api/v1/pokemons?limit=20&offset=20
+                pokemons:
+                - id: 1
+                  name: bulbasaur
+                  types:
+                  - name: grass
+                  - name: poison
+  "/api/v1/pokemons/{name}":
+    get:
+      summary: pokemon
+      tags:
+      - GET pokemon
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: returns pokemon info
+          content:
+            application/json:
+              example:
+                id: 1
+                name: bulbasaur
+                base_experience: 64
+                height: 7
+                weight: 69
+                types:
+                - name: grass
+                - name: poison
+        '404':
+          description: not found
+          content:
+            application/json:
+              example: {}
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost

@@ -34,6 +34,9 @@ gem 'poke-api-v2'
 gem 'awesome_print'
 # linter
 gem 'rubocop-rails', require: false
+# API doc
+gem 'multi_json'
+gem 'rswag'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

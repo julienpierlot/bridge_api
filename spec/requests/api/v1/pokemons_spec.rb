@@ -2,78 +2,99 @@ require 'rails_helper'
 
 RSpec.describe "Api::V1::Pokemons", type: :request do
   describe "#index" do
-    let(:params) { { format: :json } }
-    let(:get_request) { get '/api/v1/pokemons', params: params }
-    let!(:pokemon) { FactoryBot.create(:pokemon, :with_type) }
+    path '/api/v1/pokemons' do
+      get 'paginated pokemons' do
+        let!(:pokemon) { FactoryBot.create(:pokemon, :with_type) }
+        let(:limit) { 20 }
+        let(:offset) { 0 }
 
-    it 'returns correct pokemon data' do
-      get_request
-      result = {
-        count: Pokemon.count,
-        offset: 0,
-        previous_url: nil,
-        next_url: nil,
-        pokemons: [
-          {
-            id: pokemon.id,
-            name: pokemon.name,
-            types: pokemon.types.map do |type|
-              { name: type.name }
-            end
-          },
-        ]
-      }
-      expect(response).to have_http_status(:success)
-      expect(response.body).to eq(result.to_json)
-    end
-
-    context 'when there are 2 pokemons' do
-      let!(:pokemon_2) { FactoryBot.create(:pokemon, :with_type) }
-
-      context 'when limit is set to 1' do
-        let(:params) { { format: :json, limit: 1 } }
-
-        it 'returns 1 pokemon' do
-          get_request
-          result = {
-            count: Pokemon.count,
+        tags "GET pokemons"
+        consumes "application/json"
+        parameter name: :limit, in: :query, type: :integer
+        parameter name: :offset, in: :query, type: :integer
+        response '200', 'returns paginated pokemons' do
+          examples 'application/json' => {
+            count: 1118,
             offset: 0,
             previous_url: nil,
-            next_url: api_v1_pokemons_url(limit: 1, offset: 1),
+            next_url: "#{ENV['HOSTNAME']}/api/v1/pokemons?limit=20&offset=20",
             pokemons: [
               {
-                id: pokemon.id,
-                name: pokemon.name,
-                types: pokemon.types.map do |type|
-                  { name: type.name }
-                end,
-              }
+                id: 1,
+                name: "bulbasaur",
+                types: [ { name: 'grass' }, { name: 'poison' } ]
+              },
             ]
           }
-          expect(response.body).to eq(result.to_json)
-        end
-
-        context 'when requesting offset 1' do
-          let(:params) { { format: :json, limit: 1, offset: 1 } }
-
-          it 'returns 1 pokemon' do
-            get_request
+          run_test! do
             result = {
               count: Pokemon.count,
-              offset: 1,
-              previous_url: api_v1_pokemons_url(limit: 1, offset: 0),
+              offset: offset.to_i,
+              previous_url: nil,
               next_url: nil,
               pokemons: [
                 {
-                  id: pokemon_2.id,
-                  name: pokemon_2.name,
-                  types: pokemon_2.types.map do |type|
+                  id: pokemon.id,
+                  name: pokemon.name,
+                  types: pokemon.types.map do |type|
                     { name: type.name }
-                  end,
-                }
+                  end
+                },
               ]
             }
-            expect(response.body).to eq(result.to_json)
+            data = JSON.parse(response.body)
+            expect(data.deep_symbolize_keys).to eq(result)
+          end
+
+          context 'when limit is 1' do
+            let(:limit) { 1 }
+            let!(:pokemon_2) { FactoryBot.create(:pokemon, :with_type) }
+
+            run_test! do
+              result = {
+                count: Pokemon.count,
+                offset: offset.to_i,
+                previous_url: nil,
+                next_url: api_v1_pokemons_url(limit: 1, offset: 1),
+                pokemons: [
+                  {
+                    id: pokemon.id,
+                    name: pokemon.name,
+                    types: pokemon.types.map do |type|
+                      { name: type.name }
+                    end
+                  },
+                ]
+              }
+              data = JSON.parse(response.body)
+              expect(data.deep_symbolize_keys).to eq(result)
+            end
+          end
+
+          context 'when it is last page' do
+            let(:limit) { 1 }
+            let(:offset) { 1 }
+            let!(:pokemon_2) { FactoryBot.create(:pokemon, :with_type) }
+
+            run_test! do
+              result = {
+                count: Pokemon.count,
+                offset: offset,
+                previous_url: api_v1_pokemons_url(limit: 1, offset: 0),
+                next_url: nil,
+                pokemons: [
+                  {
+                    id: pokemon_2.id,
+                    name: pokemon_2.name,
+                    types: pokemon_2.types.map do |type|
+                      { name: type.name }
+                    end
+                  },
+                ]
+              }
+              data = JSON.parse(response.body)
+              expect(data.deep_symbolize_keys).to eq(result)
+            end
           end
         end
       end
@@ -81,35 +102,69 @@ RSpec.describe "Api::V1::Pokemons", type: :request do
   end
 
   describe "#show" do
-    let(:params) { { format: :json } }
     let!(:pokemon) { FactoryBot.create(:pokemon, :with_type) }
     let(:name) { CGI.escape(pokemon.name) }
-    let(:get_request) { get "/api/v1/pokemons/#{name}", params: params }
 
-    it 'returns correct pokemon data' do
-      get_request
-      result = {
-        id: pokemon.id,
-        name: pokemon.name,
-        base_experience: pokemon.base_experience,
-        height: pokemon.height,
-        weight: pokemon.weight,
-        types: pokemon.types.map do |type|
-          { name: type.name }
+    path '/api/v1/pokemons/{name}' do
+      get 'pokemon' do
+        tags "GET pokemon"
+        consumes "application/json"
+        parameter name: :name, in: :path, type: :string
+        response '200', 'returns pokemon info' do
+          examples 'application/json' => {
+            id: 1,
+            name: "bulbasaur",
+            base_experience: 64,
+            height: 7,
+            weight: 69,
+            types: [ { name: 'grass' }, { name: 'poison' } ]
+          }
+          run_test! do
+            result = {
+              id: pokemon.id,
+              name: pokemon.name,
+              base_experience: pokemon.base_experience,
+              height: pokemon.height,
+              weight: pokemon.weight,
+              types: pokemon.types.map do |type|
+                { name: type.name }
+              end
+            }
+            data = JSON.parse(response.body)
+            expect(data.deep_symbolize_keys).to eq(result)
+          end
+
+          context 'when name is capitalized' do
+            let(:name) { CGI.escape(pokemon.name.capitalize) }
+
+            run_test! do
+              result = {
+                id: pokemon.id,
+                name: pokemon.name,
+                base_experience: pokemon.base_experience,
+                height: pokemon.height,
+                weight: pokemon.weight,
+                types: pokemon.types.map do |type|
+                  { name: type.name }
+                end
+              }
+              data = JSON.parse(response.body)
+              expect(data.deep_symbolize_keys).to eq(result)
+            end
+          end
         end
-      }
-      expect(response).to have_http_status(:success)
-      expect(response.body).to eq(result.to_json)
-    end
 
-    context 'when name is capitalized' do
-      let(:name) { CGI.escape(pokemon.name.capitalize) }
+        response '404', 'not found' do
+          let(:name) { "wrong_name" }
 
-      it 'returns a 200' do
-        get_request
-        expect(response).to have_http_status(:success)
+          examples 'application/json' => {
+          }
+          run_test! do
+            expect(response).to have_http_status(:not_found)
+            expect(JSON.parse(response.body)).to eq({})
+          end
+        end
       end
     end
   end
-
 end
