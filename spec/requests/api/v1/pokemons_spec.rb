@@ -11,6 +11,7 @@ RSpec.describe "Api::V1::Pokemons", type: :request do
       result = {
         count: Pokemon.count,
         offset: 0,
+        previous_url: nil,
         next_url: nil,
         pokemons: [
           {
@@ -37,6 +38,7 @@ RSpec.describe "Api::V1::Pokemons", type: :request do
           result = {
             count: Pokemon.count,
             offset: 0,
+            previous_url: nil,
             next_url: api_v1_pokemons_url(limit: 1, offset: 1),
             pokemons: [
               {
@@ -59,6 +61,7 @@ RSpec.describe "Api::V1::Pokemons", type: :request do
             result = {
               count: Pokemon.count,
               offset: 1,
+              previous_url: api_v1_pokemons_url(limit: 1, offset: 0),
               next_url: nil,
               pokemons: [
                 {
