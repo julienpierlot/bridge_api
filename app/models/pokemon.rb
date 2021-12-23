@@ -13,7 +13,7 @@ class Pokemon < ApplicationRecord
   accepts_nested_attributes_for :types
 
   class << self
-    def fetch_pokemons!
+    def fetch!
       PokemonsFetcher.new.call
     end
 
