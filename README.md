@@ -23,9 +23,10 @@ The gem `rswag` is used to manage api docs throught requests specs. To update th
 `rake rswag:specs:swaggerize`
 
 ## Add a new source
-If you want to add a new source, you need to do the following:
- - Add new source in the `config/sources.yml` file.
- - Create a class for this source, and make sure it responds to `fetch!`
+If you want to add a new source (eg `marvel_hero`), here are the prerequisites:
+ - Add `marvel_hero` at the bottom of `config/sources.yml` file.
+ - Create a `MarvelHero` class and make sure it responds to `fetch!`
+ - Create a `UpdateMarvelHeroJob` and call `UpdateMarvelHero.fetch!`
 
 ## Update sources
 In order to update sources, please run the following:

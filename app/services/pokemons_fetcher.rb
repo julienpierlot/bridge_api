@@ -21,7 +21,9 @@ class PokemonsFetcher
   def fetch_pokemon_from_results(pokemons)
     pokemons.each do |poke|
       poke_info = fetch_data(:pokemon, poke.name)
-      Pokemon.find_or_create_from_api!(poke_info.to_json)
+      Rails.logger.info "creating or updating #{poke}"
+      pokemon = Pokemon.find_or_create_from_api!(poke_info.to_json)
+      Rails.logger.info("#{pokemon} - DONE")
     end
     pokemons
   end
