@@ -65,4 +65,4 @@ paths:
             application/json:
               example: {}
 servers:
-- url: https://localhost
+- url: https://bridge-api-jp.herokuapp.com

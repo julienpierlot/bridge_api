@@ -24,7 +24,7 @@ RSpec.configure do |config|
       paths: {},
       servers: [
         {
-          url: "https://#{ENV['HOSTNAME']}",
+          url: "https://bridge-api-jp.herokuapp.com",
         }
       ]
     }
