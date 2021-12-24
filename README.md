@@ -1,18 +1,24 @@
 # Bridge API
 This app exposes API endpoints allowing you to read data from multiple sources.
 Currently, you will only have Pokemon data, but if you want other sources, please reach out to the admin of this app.
-The API documentation is available at /api-docs
+The API documentation is available at https://bridge-api-jp.herokuapp.com/api-docs
+
 ## Ruby version
-`3.0`
+`3.0.0`
 
 ## Getting started
+### Boot
 To start the project, run the following commands in your terminal:
 `
 bundle install
 bin/rails db:setup
 `
-Make sure specs are green if you want to update the code base:
-`bundle exec rspec`
+### Env variables
+Create a `.env` at the root of the repo and add variables from `sample.env` file.
+
+### Start server
+Then start the server with the command:
+`bin/rails s`
 
 ## Tests
 To run the tests, run the following command:
@@ -33,7 +39,7 @@ In order to update sources, please run the following:
 `rake sources:update_all`
 
 ## Deployment
-This app is hosted on Heroky. A CI/CD has been impemented on this project, which means that if all specs are green when pushing to `main`, deploy will be automatically triggered.
+This app is hosted on Heroku. A CI/CD has been impemented on this project, which means that if all specs are green when pushing to `main`, deploy will be automatically triggered.
 
 ## Contribution
 If you want to make a contribution, you will have to make a PR. Please keep in mind that all new feature must be 100% tested, and that no untested code will be merged into `main`.
