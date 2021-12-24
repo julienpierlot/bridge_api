@@ -4,9 +4,9 @@ class PokemonsFetcher
   def call(options = {})
     response = fetch_data(:pokemon, options)
     fetch_pokemon_from_results(response.results)
-    unless response.next_url.nil?
-      call(options_from_next_url(response.next_url))
-    end
+    return if response.next_url.nil?
+
+    call(options_from_next_url(response.next_url))
   end
 
   private

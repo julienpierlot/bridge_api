@@ -5,8 +5,8 @@ RSpec.describe UpdateSourcesJob, type: :job do
     let(:sources) { Rails.application.config_for(:sources)['sources'] }
 
     it 'sends job to update each source' do
+      expect(UpdatePokemonJob).to receive(:perform_now)
       described_class.perform_now
-      expect(UpdatePokemonJob).to have_been_enqueued
     end
   end
 end

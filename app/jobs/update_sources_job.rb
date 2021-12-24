@@ -5,7 +5,7 @@ class UpdateSourcesJob < ApplicationJob
 
   def perform
     Rails.application.config_for(:sources)['sources'].each do |source|
-      "Update#{source.classify}Job".constantize.send(:perform_later)
+      "Update#{source.classify}Job".constantize.send(:perform_now)
     end
   end
 end
